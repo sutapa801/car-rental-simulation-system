@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Car Rental Reservation</title>
+</head>
+<body>
+<h1>Reserve a Car</h1>
+
+<form method="post" action="/reserve">
+    <label for="type">Car Type:</label>
+    <select id="type" name="type" required>
+        <option th:each="type : ${types}" th:value="${type}" th:text="${type}"></option>
+    </select>
+    <br/><br/>
+
+    <label for="userName">Your Name:</label>
+    <input type="text" id="userName" name="userName" required />
+    <br/><br/>
+
+    <label for="date">Start Date:</label>
+    <input type="date" id="date" name="date" required/>
+    <br/><br/>
+
+    <label for="days">Number of Days:</label>
+    <input type="number" id="days" name="days" min="1" required/>
+    <br/><br/>
+
+    <button type="submit">Reserve</button>
+</form>
+
+<h1>Search Cars</h1>
+
+<form method="post" action="/search">
+    <label for="type">Type:</label>
+    <select id="type" name="type" required>
+        <option th:each="t : ${T(com.example.carrental.model.CarType).values()}"
+                th:value="${t}" th:text="${t}">
+        </option>
+    </select>
+    <br/>
+
+    <label for="start">Start Date:</label>
+    <input id="start" type="date" name="start" required/>
+    <br/>
+
+    <label for="days">Number of Days:</label>
+    <input id="days" type="number" name="days" min="1" required/>
+    <br/><br/>
+
+    <button type="submit">Search</button>
+</form>
+
+<div th:if="${success != null}">
+    <p th:if="${success}" style="color:green;">Reservation successful!</p>
+    <p th:if="${!success}" style="color:red;">No cars available of selected type.</p>
+</div>
+
+<br/>
+<a href="/reservations">View All Reservations</a>
+
+</body>
+</html>

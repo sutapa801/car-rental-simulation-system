@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Reservations</title>
+</head>
+<body>
+<h1>All Reservations</h1>
+<ul>
+    <li th:each="res : ${reservations}"
+        th:text="'User: ' + ${res.userName} + ', Car ID: ' + ${res.car.id} + ', Type: ' + ${res.car.type} +
+                 ', Start: ' + ${res.startDate} + ', End: ' + ${res.endDate} + ', Days: ' + ${res.days}">
+    </li>
+</ul>
+<a href="/">Back</a>
+</body>
+</html>

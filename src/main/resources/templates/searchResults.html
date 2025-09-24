@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Search Results</title>
+</head>
+<body>
+<h1>Available Cars</h1>
+<table border="1">
+    <tr>
+        <th>Type</th>
+        <th>Days</th>
+        <th>User Name</th>
+        <th>Action</th>
+    </tr>
+    <tr th:each="car : ${availableCars}">
+        <td th:text="${car.type}"></td>
+        <td th:text="${days}"></td>
+        <td>
+            <form action="/reserve" method="post">
+                <input type="text" name="userName" placeholder="Your name" required/>
+                <input type="hidden" name="type" th:value="${type}"/>
+                <input type="hidden" name="date" th:value="${start}"/>
+                <input type="hidden" name="days" th:value="${days}"/>
+                <button type="submit">Reserve</button>
+            </form>
+        </td>
+    </tr>
+</table>
+</body>
+</html>
