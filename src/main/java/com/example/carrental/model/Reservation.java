@@ -2,6 +2,7 @@ package com.example.carrental.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 public class Reservation {
@@ -11,8 +12,8 @@ public class Reservation {
     private Long id;
 
     private String userName;
-    private LocalDate startDate;
-    private LocalDate endDate;
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
     private int days;
 
     @ManyToOne
@@ -20,12 +21,12 @@ public class Reservation {
 
     public Reservation() {}
 
-    public Reservation(Car car, String userName, LocalDate startDate, int days) {
+    public Reservation(Car car, String userName, LocalDateTime startDate, int days) {
         this.car = car;
         this.userName = userName;
         this.startDate = startDate;
         this.days = days;
-        this.endDate = startDate.plusDays(days - 1);
+        this.endDate = startDate.plusDays(days );
     }
 
     public Long getId() { return id; }
@@ -34,11 +35,11 @@ public class Reservation {
     public String getUserName() { return userName; }
     public void setUserName(String userName) { this.userName = userName; }
 
-    public LocalDate getStartDate() { return startDate; }
-    public void setStartDate(LocalDate startDate) { this.startDate = startDate; }
+    public LocalDateTime getStartDate() { return startDate; }
+    public void setStartDate(LocalDateTime startDate) { this.startDate = startDate; }
 
-    public LocalDate getEndDate() { return endDate; }
-    public void setEndDate(LocalDate endDate) { this.endDate = endDate; }
+    public LocalDateTime getEndDate() { return endDate; }
+    public void setEndDate(LocalDateTime endDate) { this.endDate = endDate; }
 
     public int getDays() { return days; }
     public void setDays(int days) { this.days = days; }

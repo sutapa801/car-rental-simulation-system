@@ -2,15 +2,74 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Reservations</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h1 { color: #333; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { border: 1px solid #ccc; padding: 8px 12px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        a, button {
+            margin-top: 10px;
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            background-color: #007BFF;
+            color: white;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        a:hover, button:hover { background-color: #0056b3; }
+        .message { margin-top: 15px; font-weight: bold; }
+        .success { color: green; }
+        .error { color: red; }
+    </style>
+    <script>
+        function confirmCancel(event) {
+            if (!confirm("Are you sure you want to cancel this reservation?")) {
+                event.preventDefault(); // stop form from submitting
+            }
+        }
+    </script>
 </head>
 <body>
 <h1>All Reservations</h1>
-<ul>
-    <li th:each="res : ${reservations}"
-        th:text="'User: ' + ${res.userName} + ', Car ID: ' + ${res.car.id} + ', Type: ' + ${res.car.type} +
-                 ', Start: ' + ${res.startDate} + ', End: ' + ${res.endDate} + ', Days: ' + ${res.days}">
-    </li>
-</ul>
+
+<!-- Show cancel result -->
+<div th:if="${successCancel != null}" class="message"
+     th:classappend="${successCancel} ? ' success' : ' error'">
+    <p th:text="${successCancel} ? 'Reservation cancelled successfully.' : 'Failed to cancel reservation.'"></p>
+</div>
+
+<table>
+    <thead>
+    <tr>
+        <th>User</th>
+        <th>Car ID</th>
+        <th>Type</th>
+        <th>Start Date</th>
+        <th>End Date</th>
+        <th>Days</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="res : ${reservations}">
+        <td th:text="${res.userName}"></td>
+        <td th:text="${res.car.id}"></td>
+        <td th:text="${res.car.type}"></td>
+        <td th:text="${res.startDate}"></td>
+        <td th:text="${res.endDate}"></td>
+        <td th:text="${res.days}"></td>
+        <td>
+            <form action="/cancel" method="post" onsubmit="confirmCancel(event)">
+                <input type="hidden" name="reservationId" th:value="${res.id}" />
+                <button type="submit">Cancel</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
 <a href="/">Back</a>
 </body>
 </html>

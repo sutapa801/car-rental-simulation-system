@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.annotation.PostConstruct;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,16 +26,28 @@ public class CarRentalService {
 
     @PostConstruct
     public void seedData() {
-        if (carRepository.count() == 0) {
-            carRepository.save(new Car(CarType.SEDAN));
-            carRepository.save(new Car(CarType.SUV));
-            carRepository.save(new Car(CarType.VAN));
-            carRepository.save(new Car(CarType.SEDAN));
-        }
+//        if (carRepository.count() == 0) {
+//            carRepository.save(new Car(CarType.SEDAN));
+//            carRepository.save(new Car(CarType.SUV));
+//            carRepository.save(new Car(CarType.VAN));
+//            carRepository.save(new Car(CarType.SEDAN));
+//        }
+//        System.out.println("Cars \n"+ carRepository.findByType(CarType.SEDAN));
+//        System.out.println("Cars \n"+ carRepository.findByType(CarType.SUV));
+//        System.out.println("Cars"+ carRepository.findByType(CarType.VAN));
+//        return carRepository.count();
+
+        reservationRepository.deleteAll();
+        carRepository.deleteAll();
+
+        carRepository.save(new Car(CarType.SEDAN));
+        carRepository.save(new Car(CarType.SEDAN));
+        carRepository.save(new Car(CarType.SUV));
+        carRepository.save(new Car(CarType.VAN));
     }
 
     @Transactional
-    public Optional<Reservation> reserveCar(String userName, CarType type, LocalDate startDate, int days) {
+    public Optional<Reservation> reserveCar(String userName, CarType type, LocalDateTime startDate, int days) {
         List<Car> availableCars = searchAvailableCars(type, startDate, days);
         if (availableCars.isEmpty()) return Optional.empty();
 
@@ -46,8 +58,12 @@ public class CarRentalService {
     }
 
     @Transactional(readOnly = true)
-    public List<Car> searchAvailableCars(CarType type, LocalDate startDate, int days) {
-        LocalDate endDate = startDate.plusDays(days - 1);
+    public List<Car> searchAvailableCars(CarType type, LocalDateTime startDate, int days) {
+        LocalDateTime endDate = startDate.plusDays(days - 1);
+        //Added to chcek what is returns during runtime
+        /*List<Car> cars = carRepository.findByType(type);
+        // Debug: check the actual runtime class of the list
+        System.out.println("cars returned is of type: " + cars.getClass().getName());*/
         return carRepository.findByType(type).stream()
                 .filter(car -> {
                     List<Reservation> conflicts =
@@ -61,5 +77,15 @@ public class CarRentalService {
     @Transactional(readOnly = true)
     public List<Reservation> getAllReservations() {
         return reservationRepository.findAll();
+    }
+
+    @Transactional
+    public boolean cancelReservation(Long reservationId) {
+        return reservationRepository.findById(reservationId)
+                .map(reservation -> {
+                    reservationRepository.delete(reservation);
+                    return true;
+                })
+                .orElse(false);
     }
 }

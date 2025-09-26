@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,7 +31,7 @@ public class CarRentalController {
 
     @PostMapping("/search")
     public String searchCars(@RequestParam CarType type,
-                             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
+                             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
                              @RequestParam int days,
                              Model model) {
         List<Car> availableCars = service.searchAvailableCars(type, start, days);
@@ -44,7 +45,7 @@ public class CarRentalController {
     @PostMapping("/reserve")
     public String reserve(@RequestParam String userName,
                           @RequestParam CarType type,
-                          @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+                          @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDateTime date,
                           @RequestParam int days,
                           Model model) {
         Optional<Reservation> reservation = service.reserveCar(userName, type, date, days);
@@ -55,6 +56,14 @@ public class CarRentalController {
 
     @GetMapping("/reservations")
     public String reservations(Model model) {
+        model.addAttribute("reservations", service.getAllReservations());
+        return "reservations";
+    }
+
+    @PostMapping("/cancel")
+    public String cancelReservation(@RequestParam Long reservationId, Model model) {
+        boolean success = service.cancelReservation(reservationId);
+        model.addAttribute("successCancel", success);
         model.addAttribute("reservations", service.getAllReservations());
         return "reservations";
     }
