@@ -57,8 +57,9 @@
         <td th:text="${res.userName}"></td>
         <td th:text="${res.car.id}"></td>
         <td th:text="${res.car.type}"></td>
-        <td th:text="${res.startDate}"></td>
-        <td th:text="${res.endDate}"></td>
+        <!-- Updated formatting to show AM/PM -->
+        <td th:text="${#temporals.format(res.startDate, 'yyyy-MM-dd hh:mm a')}"></td>
+        <td th:text="${#temporals.format(res.endDate, 'yyyy-MM-dd hh:mm a')}"></td>
         <td th:text="${res.days}"></td>
         <td>
             <form action="/cancel" method="post" onsubmit="confirmCancel(event)">

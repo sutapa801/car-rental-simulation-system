@@ -4,6 +4,8 @@ import com.example.carrental.model.Car;
 import com.example.carrental.model.CarType;
 import com.example.carrental.model.Reservation;
 import com.example.carrental.service.CarRentalService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,6 +18,7 @@ import java.util.Optional;
 
 @Controller
 public class CarRentalController {
+    private static final Logger logger = LoggerFactory.getLogger(CarRentalController.class);
 
     private final CarRentalService service;
 
@@ -34,6 +37,7 @@ public class CarRentalController {
                              @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
                              @RequestParam int days,
                              Model model) {
+        logger.info("Received search request: type={}, start={}, days={}", type, start, days);
         List<Car> availableCars = service.searchAvailableCars(type, start, days);
         model.addAttribute("availableCars", availableCars);
         model.addAttribute("type", type);
@@ -48,6 +52,7 @@ public class CarRentalController {
                           @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDateTime date,
                           @RequestParam int days,
                           Model model) {
+        logger.info("Received reservation request from user {}", userName);
         Optional<Reservation> reservation = service.reserveCar(userName, type, date, days);
         model.addAttribute("success", reservation.isPresent());
         model.addAttribute("types", CarType.values());
@@ -62,6 +67,7 @@ public class CarRentalController {
 
     @PostMapping("/cancel")
     public String cancelReservation(@RequestParam Long reservationId, Model model) {
+        logger.info("Received cancel request");
         boolean success = service.cancelReservation(reservationId);
         model.addAttribute("successCancel", success);
         model.addAttribute("reservations", service.getAllReservations());
